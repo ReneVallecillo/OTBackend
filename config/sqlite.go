@@ -3,7 +3,7 @@ package config
 //InitSqls has the init sql for each table
 var InitSqls = []string{
 	`
-    CREATE TABLE IF NOT EXISTS 'user' (
+    CREATE TABLE IF NOT EXISTS 'users' (
 	'id'	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
 	'first_name'	TEXT,
 	'last_name'	TEXT,
@@ -13,9 +13,9 @@ var InitSqls = []string{
 	'created_at'	TEXT,
 	'updated_at'	TEXT
 );`,
-	`CREATE TABLE IF NOT EXISTS 'attendance' (
+	`CREATE TABLE IF NOT EXISTS 'sign_logs' (
 	'id'	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
-	'checkin_time'	TEXT,
-	'checkout_time'	TEXT
+	'sign_in_time'	TEXT,
+	'sign_out_time'	TEXT
 );`,
 }

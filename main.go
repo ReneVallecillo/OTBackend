@@ -24,7 +24,7 @@ func main() {
 	}
 	r := httprouter.New()
 	r.GET("/users", getUserHandler(db))
-	// r.POST("/users", postUserHander(db))
+	r.POST("/user", postUserHandler(db))
 
 	log.Println("Listening on :8080")
 	http.ListenAndServe(":8080", r)
@@ -48,8 +48,25 @@ func getUserHandler(db *sql.DB) httprouter.Handle {
 	}
 }
 
+func postUserHandler(db *sql.DB) httprouter.Handle {
+	return func(rw http.ResponseWriter, r *http.Request, p httprouter.Params) {
+		var u models.User
+		if err := json.NewDecoder(r.Body).Decode(&u); err != nil {
+			respondError(rw, err)
+			return
+		}
+
+		if err := createUser(db, u); err != nil {
+			respondError(rw, err)
+			return
+		}
+
+		rw.WriteHeader(http.StatusNoContent)
+	}
+}
+
 func getUsers(db *sql.DB) ([]models.User, error) {
-	q := "SELECT firstname, email FROM users"
+	q := "SELECT first_name, email FROM users"
 	rows, err := db.Query(q)
 	if err != nil {
 		log.Println(err)
@@ -68,6 +85,16 @@ func getUsers(db *sql.DB) ([]models.User, error) {
 	}
 
 	return users, nil
+}
+
+func createUser(db *sql.DB, u models.User) error {
+	q := "INSERT INTO users(first_name, last_name, email) VALUES ($1, $2, $3)"
+	if _, err := db.Exec(q, u.FirstName, u.LastName, u.Email); err != nil {
+		log.Println(err)
+		return err
+	}
+
+	return nil
 }
 
 func respondError(rw http.ResponseWriter, err error) {

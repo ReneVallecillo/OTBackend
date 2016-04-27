@@ -16,7 +16,7 @@ func NewDB() (*sql.DB, error) {
 	}
 
 	for _, table := range config.InitSqls {
-		_, err := db.Query(table)
+		_, err := db.Exec(table)
 		if err != nil {
 			log.Println(err)
 			return nil, err
