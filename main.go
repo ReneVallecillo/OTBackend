@@ -66,7 +66,7 @@ func postUserHandler(db *sql.DB) httprouter.Handle {
 }
 
 func getUsers(db *sql.DB) ([]models.User, error) {
-	q := "SELECT first_name, email FROM users"
+	q := "SELECT first_name,last_name, email FROM users"
 	rows, err := db.Query(q)
 	if err != nil {
 		log.Println(err)
@@ -76,7 +76,7 @@ func getUsers(db *sql.DB) ([]models.User, error) {
 	var users []models.User
 	for rows.Next() {
 		var b models.User
-		if err := rows.Scan(&b.FirstName, &b.Email); err != nil {
+		if err := rows.Scan(&b.FirstName, &b.LastName, &b.Email); err != nil {
 			log.Println(err)
 			return nil, err
 		}
